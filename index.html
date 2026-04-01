@@ -50,36 +50,76 @@
     overscroll-behavior: none;
   }
 
-  /* ── NAV ── */
+  /* ── TOP NAV ── */
   nav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(247,245,240,0.92);
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(247,245,240,0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    padding-left: max(2rem, env(safe-area-inset-left));
-    padding-right: max(2rem, env(safe-area-inset-right));
+    padding: 0 1.25rem;
+    padding-top: env(safe-area-inset-top);
     display: flex; align-items: center; justify-content: space-between;
-    height: 60px;
+    height: calc(56px + env(safe-area-inset-top));
   }
-  .nav-brand { font-family: var(--font-display); font-size: 1.25rem; color: var(--ink); letter-spacing: -0.02em; }
+  .nav-brand { font-family: var(--font-display); font-size: 1.2rem; color: var(--ink); letter-spacing: -0.02em; }
   .nav-brand span { color: var(--accent); }
-  .nav-tabs { display: flex; gap: 4px; }
-  .nav-tab {
-    padding: 6px 14px; border-radius: 8px; border: none; background: none;
-    color: var(--ink-light); font-family: var(--font-body); font-size: 14px; font-weight: 400;
-    cursor: pointer; transition: all 0.15s;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
+
+  /* ── DROPDOWN MENU ── */
+  .nav-menu-btn {
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    gap: 5px; width: 44px; height: 44px; border: none; background: none; cursor: pointer;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation; border-radius: 10px;
+    transition: background 0.15s;
   }
-  .nav-tab:hover { background: var(--border); color: var(--ink); }
-  .nav-tab.active { background: var(--ink); color: var(--white); }
+  .nav-menu-btn:hover { background: var(--border); }
+  .nav-menu-btn span {
+    display: block; width: 20px; height: 1.5px; background: var(--ink);
+    border-radius: 2px; transition: all 0.2s;
+  }
+  .nav-menu-btn.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-menu-btn.open span:nth-child(2) { opacity: 0; }
+  .nav-menu-btn.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .nav-dropdown {
+    position: fixed; top: calc(56px + env(safe-area-inset-top)); left: 0; right: 0; z-index: 190;
+    background: rgba(247,245,240,0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 1rem 1rem;
+    display: none;
+    animation: dropDown 0.2s ease;
+  }
+  .nav-dropdown.open { display: block; }
+  @keyframes dropDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .nav-dropdown-item {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; padding: 14px 12px; border: none; background: none;
+    font-family: var(--font-body); font-size: 16px; font-weight: 400; color: var(--ink-light);
+    cursor: pointer; border-radius: 10px; transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    text-align: left;
+  }
+  .nav-dropdown-item:hover, .nav-dropdown-item:active { background: var(--border); }
+  .nav-dropdown-item.active { color: var(--accent); font-weight: 500; }
+  .nav-dropdown-item .nav-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .nav-dropdown-item.active .nav-dot { opacity: 1; }
+
+  /* ── OVERLAY ── */
+  .nav-overlay {
+    display: none; position: fixed; inset: 0; z-index: 180;
+  }
+  .nav-overlay.open { display: block; }
 
   /* ── PAGES ── */
-  .page { display: none; padding: 2.5rem 2rem; padding-bottom: max(2.5rem, env(safe-area-inset-bottom)); max-width: 800px; margin: 0 auto; }
-  .page.active { display: block; animation: fadeUp 0.3s ease; }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .page { display: none; padding: 1.5rem 1.1rem; padding-bottom: max(5rem, calc(env(safe-area-inset-bottom) + 4rem)); max-width: 800px; margin: 0 auto; }
+  .page.active { display: block; animation: fadeUp 0.25s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
   /* ── HERO (Dashboard) ── */
   .hero-title { font-family: var(--font-display); font-size: clamp(2rem, 6vw, 3rem); line-height: 1.1; color: var(--ink); margin-bottom: 0.25rem; }
@@ -145,8 +185,6 @@
   .badge-green { background: var(--accent-light); color: var(--accent); }
   .badge-blue { background: var(--blue-light); color: var(--blue); }
   .badge-amber { background: var(--amber-light); color: var(--amber); }
-  .del-btn { background: none; border: none; color: var(--ink-faint); cursor: pointer; font-size: 18px; line-height: 1; padding: 2px 4px; border-radius: 4px; transition: color 0.15s; }
-  .del-btn:hover { color: var(--danger); }
   .empty-state { text-align: center; padding: 2.5rem 1rem; color: var(--ink-faint); font-size: 14px; }
 
   /* ── PROGRESS BAR ── */
@@ -174,26 +212,41 @@
   /* ── DIVIDER ── */
   hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
 
-  /* ── RESPONSIVE ── */
+  /* ── MOBILE REFINEMENTS ── */
   @media (max-width: 600px) {
-    nav { padding: 0 1rem; }
-    .page { padding: 1.5rem 1rem; }
-    .nav-tab { padding: 5px 10px; font-size: 13px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .form-grid { grid-template-columns: 1fr 1fr; }
+    .hero-title { font-size: 1.9rem; }
   }
+
+  /* ── LARGER TOUCH TARGETS ── */
+  .del-btn {
+    background: none; border: none; color: var(--ink-faint); cursor: pointer;
+    font-size: 18px; line-height: 1; padding: 8px; border-radius: 8px;
+    transition: color 0.15s; min-width: 44px; min-height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .del-btn:hover, .del-btn:active { color: var(--danger); }
 </style>
 </head>
 <body>
 
 <nav>
   <div class="nav-brand">Ryder's <span>Progress</span></div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('dashboard')">Dashboard</button>
-    <button class="nav-tab" onclick="showPage('workouts')">Workouts</button>
-    <button class="nav-tab" onclick="showPage('nutrition')">Nutrition</button>
-    <button class="nav-tab" onclick="showPage('weight')">Weight</button>
-    <button class="nav-tab" onclick="showPage('goals')">Goals</button>
-  </div>
+  <button class="nav-menu-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="nav-overlay" id="nav-overlay" onclick="closeMenu()"></div>
+<div class="nav-dropdown" id="nav-dropdown">
+  <button class="nav-dropdown-item active" id="nav-dashboard" onclick="showPage('dashboard')">Dashboard <div class="nav-dot"></div></button>
+  <button class="nav-dropdown-item" id="nav-workouts" onclick="showPage('workouts')">Workouts <div class="nav-dot"></div></button>
+  <button class="nav-dropdown-item" id="nav-nutrition" onclick="showPage('nutrition')">Nutrition <div class="nav-dot"></div></button>
+  <button class="nav-dropdown-item" id="nav-weight" onclick="showPage('weight')">Weight <div class="nav-dot"></div></button>
+  <button class="nav-dropdown-item" id="nav-goals" onclick="showPage('goals')">Goals <div class="nav-dot"></div></button>
+</div>
 
 <!-- DASHBOARD -->
 <div class="page active" id="page-dashboard">
@@ -371,11 +424,26 @@ function today() { return new Date().toISOString().slice(0,10); }
 function fmtDate(d) { return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
 
 // ── NAV ──
+function toggleMenu() {
+  const btn = document.getElementById('menu-btn');
+  const dd = document.getElementById('nav-dropdown');
+  const ov = document.getElementById('nav-overlay');
+  const isOpen = dd.classList.contains('open');
+  btn.classList.toggle('open', !isOpen);
+  dd.classList.toggle('open', !isOpen);
+  ov.classList.toggle('open', !isOpen);
+}
+function closeMenu() {
+  document.getElementById('menu-btn').classList.remove('open');
+  document.getElementById('nav-dropdown').classList.remove('open');
+  document.getElementById('nav-overlay').classList.remove('open');
+}
 function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-dropdown-item').forEach(b => b.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  event.target.classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  closeMenu();
   if (name === 'weight') drawWeightChart();
   if (name === 'dashboard') renderDashboard();
 }
